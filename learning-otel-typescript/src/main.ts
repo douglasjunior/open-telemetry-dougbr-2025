@@ -2,10 +2,23 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Logger } from 'nestjs-pino';
+import { registerInstrumentations } from '@opentelemetry/instrumentation';
+import { TypeormInstrumentation } from 'opentelemetry-instrumentation-typeorm';
+
+registerInstrumentations({
+  instrumentations: [
+    new TypeormInstrumentation({
+      enableInternalInstrumentation: true,
+      collectParameters: true,
+    })
+  ],
+});
 
 import { AppModule } from './app.module';
 import { AppConfigService } from './app-config/app-config.service';
 import { EntityNotFoundExceptionFilter } from './filters/entity-not-found-exception.filter';
+
+
 
 const config = new DocumentBuilder()
   .setTitle('Todo example')
